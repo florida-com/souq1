@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS products (
+  id BIGINT PRIMARY KEY,
+  name TEXT NOT NULL,
+  cat TEXT NOT NULL,
+  price NUMERIC(12,2) NOT NULL CHECK (price >= 0),
+  old NUMERIC(12,2),
+  icon TEXT,
+  bg TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS promos (
+  code TEXT PRIMARY KEY,
+  rate NUMERIC(5,4) NOT NULL CHECK (rate >= 0 AND rate <= 1),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGSERIAL PRIMARY KEY,
+  customer JSONB NOT NULL,
+  items JSONB NOT NULL,
+  subtotal NUMERIC(12,2) NOT NULL,
+  discount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  total NUMERIC(12,2) NOT NULL,
+  promo TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS orders_created_at_idx ON orders(created_at DESC);
